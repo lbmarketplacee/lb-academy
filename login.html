@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LB Academy — Entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a09; --gold:#d4a94a; --gold-light:#f0d791;
+    --text:#f3efe4; --text-muted:#a39d8c; --text-faint:#6e6a5d; --border:#282722;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Montserrat', sans-serif;
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    position:relative; overflow:hidden; }
+  .bg{ position:absolute; inset:0;
+    background:radial-gradient(ellipse 55% 45% at 50% 35%, rgba(212,169,74,0.16), transparent 70%), #0a0a09; }
+  .box{ position:relative; z-index:2; text-align:center; width:100%; max-width:400px; padding:0 24px; }
+  .kicker{ font-family:'Oswald',sans-serif; font-size:11px; letter-spacing:6px; color:var(--gold); margin-bottom:18px; font-weight:500; }
+  .logo{ font-family:'Oswald', sans-serif; font-weight:700; font-size:64px; line-height:0.9; letter-spacing:1px;
+    text-shadow:0 0 60px rgba(212,169,74,0.25); margin-bottom:6px; }
+  .logo .accent{ color:var(--gold-light); }
+  .tag{ font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:8px; color:var(--text-faint); margin-bottom:48px; }
+  .sub{ font-size:13px; color:var(--text-muted); margin-bottom:32px; line-height:1.6; }
+  .google-btn{ display:flex; align-items:center; justify-content:center; gap:12px; width:100%; padding:15px 20px;
+    background:#f3efe4; color:#1a1a17; border-radius:4px; font-weight:600; font-size:14px;
+    cursor:pointer; border:none; transition:transform .15s ease; }
+  .google-btn:hover{ transform:translateY(-2px); }
+  .google-btn:disabled{ opacity:0.6; cursor:wait; }
+  .google-btn svg{ width:18px; height:18px; }
+  .status{ margin-top:20px; font-size:12.5px; min-height:18px; }
+  .status.error{ color:#e08a7a; }
+  .status.ok{ color:#7ac98f; }
+  .foot{ margin-top:26px; font-size:11px; color:var(--text-faint); line-height:1.7; }
+  .foot a{ color:var(--gold); text-decoration:underline; cursor:pointer; }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="box">
+    <div class="kicker">LEGACY ACCESS · ÁREA DE MEMBROS</div>
+    <div class="logo">LB <span class="accent">ACADEMY</span></div>
+    <div class="tag">M A R K E T P L A C E</div>
+    <div class="sub">Entre com o mesmo e-mail Google usado na sua compra pra liberar seu acesso automaticamente.</div>
+
+    <button class="google-btn" id="loginBtn">
+      <svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4c-7.4 0-13.8 4.2-17 10.4z"/><path fill="#4CAF50" d="M24 44c5.5 0 10.4-1.9 14.2-5.1l-6.5-5.5C29.6 35.5 26.9 36.5 24 36.5c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.9 39.6 16.4 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.8l6.5 5.5C41.4 35.6 44 30.2 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+      Entrar com Google
+    </button>
+
+    <div id="status" class="status"></div>
+
+    <div class="foot">
+      Não reconhece seu acesso? <a href="https://wa.me/5511999999999" target="_blank">Fale com o suporte</a><br>
+      Ao continuar, você concorda com os <a>Termos de Uso</a>.
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, googleProvider, db, ADMIN_EMAILS } from "./js/firebase-config.js";
+    import { signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const btn = document.getElementById("loginBtn");
+    const status = document.getElementById("status");
+
+    btn.addEventListener("click", async () => {
+      btn.disabled = true;
+      status.textContent = "Conectando com o Google...";
+      status.className = "status";
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const user = result.user;
+
+        // Verifica se é admin
+        if (ADMIN_EMAILS.includes(user.email)) {
+          window.location.href = "admin.html";
+          return;
+        }
+
+        // Verifica se existe registro de compra liberada pra esse e-mail
+        const compraRef = doc(db, "compras_liberadas", user.email);
+        const compraSnap = await getDoc(compraRef);
+
+        if (!compraSnap.exists()) {
+          status.textContent = "Não encontramos uma compra com esse e-mail. Verifique se usou o mesmo e-mail do checkout, ou fale com o suporte.";
+          status.className = "status error";
+          btn.disabled = false;
+          return;
+        }
+
+        // Cria/atualiza o registro do aluno
+        const alunoRef = doc(db, "alunos", user.uid);
+        await setDoc(alunoRef, {
+          nome: user.displayName,
+          email: user.email,
+          foto: user.photoURL,
+          acesso: "liberado",
+          ultimo_login: serverTimestamp()
+        }, { merge: true });
+
+        status.textContent = "Acesso liberado! Redirecionando...";
+        status.className = "status ok";
+        setTimeout(() => window.location.href = "index.html", 700);
+
+      } catch (err) {
+        console.error(err);
+        status.textContent = "Erro ao conectar: " + err.message;
+        status.className = "status error";
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

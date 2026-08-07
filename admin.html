@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LB Academy — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a09; --bg-alt:#111110; --surface:#171613; --surface-2:#1c1b17;
+    --border:#282722; --border-strong:#3a3728;
+    --gold:#d4a94a; --gold-light:#f0d791;
+    --text:#f3efe4; --text-muted:#a39d8c; --text-faint:#6e6a5d;
+    --green:#5fbf7a; --red:#d9705f;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Montserrat',sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,.condensed{ font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.5px; }
+  a{ color:inherit; text-decoration:none; }
+  ::-webkit-scrollbar{ height:6px; width:6px; }
+  ::-webkit-scrollbar-thumb{ background:var(--border-strong); border-radius:4px; }
+
+  .app{ display:flex; min-height:100vh; }
+
+  .sidebar{
+    width:230px; flex-shrink:0; background:var(--bg-alt);
+    border-right:1px solid var(--border); padding:24px 18px;
+    display:flex; flex-direction:column;
+  }
+  .brand{ font-family:'Oswald',sans-serif; font-weight:700; font-size:20px; margin-bottom:2px; }
+  .brand-sub{ font-size:9px; letter-spacing:2px; color:var(--gold); font-weight:600; margin-bottom:24px; }
+  .nav-item{
+    display:flex; align-items:center; gap:11px; padding:11px 10px; border-radius:5px;
+    font-size:13px; color:var(--text-muted); cursor:pointer; margin-bottom:2px;
+  }
+  .nav-item.active{ background:rgba(212,169,74,0.08); color:var(--gold-light); }
+  .nav-icon{ width:16px; height:16px; }
+  .sidebar-footer{ margin-top:auto; font-size:10.5px; color:var(--text-faint); padding-top:16px; border-top:1px solid var(--border); }
+
+  .main{ flex:1; min-width:0; padding:32px 40px; }
+  .page-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:28px; }
+  .page-title{ font-family:'Oswald',sans-serif; font-size:24px; font-weight:600; }
+  .page-sub{ font-size:12.5px; color:var(--text-faint); margin-top:4px; }
+  .btn-primary{
+    background:var(--gold); color:#181712; border:none; padding:11px 20px; border-radius:5px;
+    font-weight:700; font-size:12.5px; cursor:pointer;
+  }
+
+  /* KPI cards */
+  .kpi-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:32px; }
+  .kpi-card{ background:var(--bg-alt); border:1px solid var(--border); border-radius:8px; padding:20px; }
+  .kpi-label{ font-size:11px; color:var(--text-faint); letter-spacing:1px; margin-bottom:10px; text-transform:uppercase; font-family:'Oswald',sans-serif; }
+  .kpi-value{ font-family:'Oswald',sans-serif; font-size:32px; font-weight:600; color:var(--gold-light); }
+  .kpi-delta{ font-size:11px; color:var(--green); margin-top:6px; }
+  .kpi-delta.warn{ color:#e0a84a; }
+
+  .section-title{ font-family:'Oswald',sans-serif; font-size:15px; font-weight:600; margin-bottom:14px; color:var(--text); }
+
+  .grid-2{ display:grid; grid-template-columns:1.4fr 1fr; gap:20px; margin-bottom:10px; }
+
+  .panel{ background:var(--bg-alt); border:1px solid var(--border); border-radius:8px; padding:22px; }
+
+  table{ width:100%; border-collapse:collapse; }
+  th{ text-align:left; font-size:10.5px; color:var(--text-faint); text-transform:uppercase; letter-spacing:0.5px; padding:8px 10px; border-bottom:1px solid var(--border); font-family:'Oswald',sans-serif; }
+  td{ padding:11px 10px; font-size:12.5px; border-bottom:1px solid var(--border); color:var(--text-muted); }
+  tr:last-child td{ border-bottom:none; }
+  .pill{ padding:3px 9px; border-radius:20px; font-size:10.5px; font-weight:600; }
+  .pill.stuck{ background:rgba(217,112,95,0.15); color:var(--red); }
+  .pill.active{ background:rgba(95,191,122,0.15); color:var(--green); }
+  .student-name{ color:var(--text); font-weight:500; }
+
+  .track-bar-row{ display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .track-bar-row:last-child{ margin-bottom:0; }
+  .track-bar-label{ width:110px; font-size:12px; color:var(--text-muted); flex-shrink:0; }
+  .track-bar-track{ flex:1; height:7px; background:var(--surface); border-radius:4px; overflow:hidden; }
+  .track-bar-fill{ height:100%; background:var(--gold); }
+  .track-bar-pct{ width:36px; text-align:right; font-size:11px; color:var(--text-faint); }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">LB ACADEMY</div>
+    <div class="brand-sub">PAINEL ADMIN</div>
+
+    <div class="nav-item active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Visão Geral
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      Gerenciar Conteúdo
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Alunos
+    </div>
+
+    <div class="sidebar-footer">Logado como<br><strong style="color:var(--text)">Lincoln (Admin)</strong></div>
+  </aside>
+
+  <main class="main">
+    <div class="page-head">
+      <div>
+        <div class="page-title">Visão Geral</div>
+        <div class="page-sub">Acompanhamento em tempo real da LB Academy</div>
+      </div>
+      <button class="btn-primary">+ Novo Módulo</button>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi-card">
+        <div class="kpi-label">Alunos ativos</div>
+        <div class="kpi-value">184</div>
+        <div class="kpi-delta">+12 essa semana</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Progresso médio</div>
+        <div class="kpi-value">47%</div>
+        <div class="kpi-delta">dos 28 módulos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Trilhas concluídas</div>
+        <div class="kpi-value">63</div>
+        <div class="kpi-delta">selos emitidos</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Alunos travados</div>
+        <div class="kpi-value">22</div>
+        <div class="kpi-delta warn">+7 dias sem avançar</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="panel">
+        <div class="section-title">Alunos travados — precisam de empurrão</div>
+        <table>
+          <thead><tr><th>Aluno</th><th>Última atividade</th><th>Parado em</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="student-name">Rafael Souza</td><td>12 dias atrás</td><td>Shopee · Mód. 02</td><td><span class="pill stuck">Travado</span></td></tr>
+            <tr><td class="student-name">Juliana Prado</td><td>9 dias atrás</td><td>ML · Mód. 01</td><td><span class="pill stuck">Travado</span></td></tr>
+            <tr><td class="student-name">Carlos Mendes</td><td>8 dias atrás</td><td>TikTok · Mód. 03</td><td><span class="pill stuck">Travado</span></td></tr>
+            <tr><td class="student-name">Bianca Ferreira</td><td>2 dias atrás</td><td>Shein · Mód. 02</td><td><span class="pill active">Ativo</span></td></tr>
+            <tr><td class="student-name">Diego Alves</td><td>1 dia atrás</td><td>UpSeller · Mód. 04</td><td><span class="pill active">Ativo</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <div class="section-title">Engajamento por trilha</div>
+        <div class="track-bar-row"><div class="track-bar-label">Shopee</div><div class="track-bar-track"><div class="track-bar-fill" style="width:82%"></div></div><div class="track-bar-pct">82%</div></div>
+        <div class="track-bar-row"><div class="track-bar-label">Mercado Livre</div><div class="track-bar-track"><div class="track-bar-fill" style="width:68%"></div></div><div class="track-bar-pct">68%</div></div>
+        <div class="track-bar-row"><div class="track-bar-label">TikTok Shop</div><div class="track-bar-track"><div class="track-bar-fill" style="width:55%"></div></div><div class="track-bar-pct">55%</div></div>
+        <div class="track-bar-row"><div class="track-bar-label">Shein</div><div class="track-bar-track"><div class="track-bar-fill" style="width:31%"></div></div><div class="track-bar-pct">31%</div></div>
+        <div class="track-bar-row"><div class="track-bar-label">UpSeller</div><div class="track-bar-track"><div class="track-bar-fill" style="width:44%"></div></div><div class="track-bar-pct">44%</div></div>
+        <div class="track-bar-row"><div class="track-bar-label">Diretor Criativo</div><div class="track-bar-track"><div class="track-bar-fill" style="width:59%"></div></div><div class="track-bar-pct">59%</div></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

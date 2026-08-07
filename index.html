@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LB Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a09;
+    --bg-alt:#111110;
+    --surface:#171613;
+    --border:#282722;
+    --border-strong:#3a3728;
+    --gold:#d4a94a;
+    --gold-light:#f0d791;
+    --text:#f3efe4;
+    --text-muted:#a39d8c;
+    --text-faint:#6e6a5d;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Montserrat', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  ::-webkit-scrollbar{height:6px; width:6px;}
+  ::-webkit-scrollbar-thumb{background:var(--border-strong); border-radius:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+
+  h1,h2,h3,.condensed{
+    font-family:'Oswald', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+  }
+
+  .app{ display:flex; min-height:100vh; }
+
+  /* SIDEBAR */
+  .sidebar{
+    width:250px; flex-shrink:0;
+    background:var(--bg-alt);
+    border-right:1px solid var(--border);
+    padding:24px 20px;
+    display:flex; flex-direction:column;
+    position:sticky; top:0; height:100vh;
+  }
+  .collapse-btn{
+    width:24px; height:24px; color:var(--text-faint);
+    margin-bottom:22px; cursor:pointer;
+  }
+  .brand{ margin-bottom:26px; }
+  .brand-word{
+    font-family:'Oswald', sans-serif;
+    font-weight:700; font-size:26px; line-height:0.95;
+    letter-spacing:1px;
+  }
+  .brand-sub{
+    font-size:9px; letter-spacing:3px; color:var(--gold);
+    font-weight:600; margin-top:4px;
+  }
+  hr.sep{ border:none; border-top:1px solid var(--border); margin:18px 0; }
+
+  .student{ display:flex; align-items:center; gap:12px; margin-bottom:6px; }
+  .student-avatar{
+    width:42px; height:42px; border-radius:50%;
+    background:linear-gradient(160deg,#2a2822,#171613);
+    border:1px solid var(--border-strong);
+    overflow:hidden; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald',sans-serif; font-size:15px; color:var(--gold-light);
+  }
+  .student-greet{ font-size:13px; color:var(--text-muted); line-height:1.3; }
+  .student-name{ font-size:15px; font-weight:600; color:var(--text); }
+
+  .nav{ display:flex; flex-direction:column; margin-top:8px; }
+  .nav-item{
+    display:flex; align-items:center; gap:13px;
+    padding:13px 6px;
+    font-size:13.5px; font-weight:500; color:var(--text-muted);
+    cursor:pointer; transition:color .15s ease;
+  }
+  .nav-item:hover, .nav-item.active{ color:var(--gold-light); }
+  .nav-icon{ width:17px; height:17px; flex-shrink:0; opacity:0.85; }
+  .nav-divider{ border-top:1px dashed var(--border); margin:2px 0; }
+
+  .sidebar-footer{ margin-top:auto; padding-top:18px; font-size:10.5px; color:var(--text-faint); line-height:1.6; }
+
+  /* MAIN */
+  .main{ flex:1; min-width:0; }
+
+  .hero{
+    position:relative; height:400px;
+    display:flex; align-items:center; justify-content:center;
+    background:#0d0c0a;
+    overflow:hidden;
+    border-bottom:1px solid var(--border);
+  }
+  .hero-bg{
+    position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 40%, rgba(212,169,74,0.13), transparent 70%),
+      #0a0a09;
+  }
+  .hero-noise{
+    position:absolute; inset:0; opacity:0.4;
+    background-image:repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, transparent 1px, transparent 3px);
+  }
+  .hero-content{ position:relative; text-align:center; z-index:2; }
+  .hero-kicker{
+    font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:6px;
+    color:var(--gold); margin-bottom:14px; font-weight:500;
+  }
+  .hero-logo{
+    font-family:'Oswald', sans-serif;
+    font-weight:700;
+    font-size:96px;
+    line-height:0.85;
+    letter-spacing:2px;
+    color:var(--text);
+    text-shadow:0 0 60px rgba(212,169,74,0.25);
+  }
+  .hero-logo .accent{ color:var(--gold-light); }
+  .hero-tag{
+    font-family:'Oswald',sans-serif; font-size:15px; letter-spacing:10px;
+    color:var(--text-faint); margin-top:6px; font-weight:400;
+  }
+
+  .content{ padding:36px 46px 90px; }
+
+  .track{ margin-bottom:48px; }
+  .track-head{
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:16px;
+  }
+  .track-icon{
+    width:30px; height:30px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .track-icon img{ width:100%; height:100%; object-fit:contain; }
+  .track-title{
+    font-family:'Oswald',sans-serif; font-size:21px; font-weight:600;
+  }
+  .track-progress{
+    margin-left:auto; font-size:11px; color:var(--text-faint);
+    font-family:'Oswald',sans-serif; letter-spacing:1px;
+  }
+
+  .rail{ display:flex; gap:14px; overflow-x:auto; padding-bottom:8px; }
+  .card{
+    flex:0 0 190px; height:290px;
+    position:relative; border-radius:4px; overflow:hidden;
+    border:1px solid var(--border);
+    cursor:pointer; background:#000;
+    transition:transform .2s ease;
+  }
+  .card:hover{ transform:translateY(-5px); }
+  .card img{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+  .card-lock{
+    position:absolute; top:8px; right:8px;
+    width:22px; height:22px; border-radius:50%;
+    background:rgba(0,0,0,0.55); border:1px solid rgba(255,255,255,0.15);
+    display:flex; align-items:center; justify-content:center; font-size:10px;
+  }
+  .card-num{
+    position:absolute; top:8px; left:8px;
+    font-family:'Oswald',sans-serif; font-size:10px; font-weight:600;
+    color:var(--gold-light); background:rgba(0,0,0,0.55);
+    padding:3px 7px; border-radius:3px; letter-spacing:1px;
+  }
+
+  @media (max-width: 860px){
+    .sidebar{ display:none; }
+    .hero{ height:280px; }
+    .hero-logo{ font-size:56px; }
+    .content{ padding:24px 20px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <svg class="collapse-btn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="9" y1="4" x2="9" y2="20"/></svg>
+
+    <div class="brand">
+      <div class="brand-word">LB<br>ACADEMY</div>
+      <div class="brand-sub">LEGACY ACCESS</div>
+    </div>
+    <hr class="sep">
+
+    <div class="student">
+      <div class="student-avatar">L</div>
+      <div>
+        <div class="student-greet">Olá,</div>
+        <div class="student-name">Lincoln</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-item active">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Meus Cursos
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+        Minha Conta
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4c-1.4-.1-2.2-.4-3.4-1L3 20l1.2-4.5A8.4 8.4 0 1121 11.5z"/></svg>
+        Suporte
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-item">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sair
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">LB Academy © 2026<br>Caieiras, SP</div>
+  </aside>
+
+  <main class="main">
+
+    <div class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-noise"></div>
+      <div class="hero-content">
+        <div class="hero-kicker">LEGACY ACCESS · MEMBRO CERTIFICADO</div>
+        <div class="hero-logo">LB <span class="accent">ACADEMY</span></div>
+        <div class="hero-tag">M A R K E T P L A C E</div>
+      </div>
+    </div>
+
+    <div class="content" id="tracksContainer">
+      <div style="text-align:center; padding:60px; color:var(--text-faint); font-family:'Oswald',sans-serif;">Carregando suas trilhas...</div>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+  import { auth, db } from "./js/firebase-config.js";
+  import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { collection, getDocs, doc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const container = document.getElementById("tracksContainer");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    // Preenche nome/avatar do aluno na sidebar
+    document.querySelector(".student-name").textContent = user.displayName ? user.displayName.split(" ")[0] : "Aluno";
+    document.querySelector(".student-avatar").textContent = (user.displayName || "A")[0].toUpperCase();
+
+    // Pega progresso do aluno
+    const alunoRef = doc(db, "alunos", user.uid);
+    const alunoSnap = await getDoc(alunoRef);
+    const progresso = alunoSnap.exists() && alunoSnap.data().progresso ? alunoSnap.data().progresso : {};
+
+    // Carrega as trilhas do Firestore, ordenadas
+    const trilhasSnap = await getDocs(query(collection(db, "trilhas"), orderBy("ordem")));
+    container.innerHTML = "";
+
+    for (const trilhaDoc of trilhasSnap.docs) {
+      const trilha = trilhaDoc.data();
+      const trilhaId = trilhaDoc.id;
+
+      const modulosSnap = await getDocs(query(collection(db, "trilhas", trilhaId, "modulos"), orderBy("ordem")));
+
+      let concluidos = 0;
+      let cardsHtml = "";
+      let primeiroBloqueado = false;
+
+      modulosSnap.forEach((modDoc) => {
+        const mod = modDoc.data();
+        const modId = modDoc.id;
+        const chave = `${trilhaId}-${modId}`;
+        const feito = !!(progresso[chave] && progresso[chave].concluido);
+        if (feito) concluidos++;
+
+        const bloqueado = !feito && primeiroBloqueado;
+        if (!feito) primeiroBloqueado = true;
+
+        const imgSrc = mod.imagem_url || `img/${mod.imagem_arquivo || ""}`;
+        const linkHref = bloqueado ? "javascript:void(0)" : `player.html?trilha=${trilhaId}&modulo=${modId}`;
+
+        cardsHtml += `
+          <a href="${linkHref}" class="card" style="${bloqueado ? 'pointer-events:none; filter:grayscale(60%) brightness(0.6);' : ''}">
+            <div class="card-num">MÓD. ${String(mod.ordem).padStart(2,'0')}</div>
+            ${feito ? '<div class="card-lock" style="background:rgba(95,191,122,0.85);">✓</div>' : (bloqueado ? '<div class="card-lock">🔒</div>' : '')}
+            <img src="${imgSrc}" onerror="this.style.background='linear-gradient(160deg,#1a1912,#0a0a09)'">
+          </a>`;
+      });
+
+      const trackHtml = `
+        <div class="track">
+          <div class="track-head">
+            <div class="track-title">${trilha.nome}</div>
+            <div class="track-progress">${concluidos} / ${modulosSnap.size} CONCLUÍDOS</div>
+          </div>
+          <div class="rail">${cardsHtml}</div>
+        </div>`;
+      container.insertAdjacentHTML("beforeend", trackHtml);
+    }
+
+    if (trilhasSnap.empty) {
+      container.innerHTML = `<div style="text-align:center; padding:60px; color:var(--text-faint);">Nenhuma trilha encontrada. Rode o seed.html primeiro.</div>`;
+    }
+  });
+
+  // Botão "Sair"
+  document.addEventListener("click", (e) => {
+    if (e.target.closest(".nav-item") && e.target.closest(".nav-item").textContent.trim() === "Sair") {
+      signOut(auth).then(() => window.location.href = "login.html");
+    }
+  });
+</script>
+
+</body>
+</html>

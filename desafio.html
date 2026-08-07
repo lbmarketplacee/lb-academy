@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LB Academy — Desafio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a09; --bg-alt:#111110; --surface:#171613;
+    --border:#282722; --border-strong:#3a3728;
+    --gold:#d4a94a; --gold-light:#f0d791;
+    --text:#f3efe4; --text-muted:#a39d8c; --text-faint:#6e6a5d;
+    --green:#5fbf7a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Montserrat',sans-serif; -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; padding:30px; }
+  h1,h2,h3,.condensed{ font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.5px; }
+
+  .bg{
+    position:absolute; inset:0;
+    background:radial-gradient(ellipse 55% 45% at 50% 30%, rgba(212,169,74,0.12), transparent 70%), #0a0a09;
+  }
+
+  .card{
+    position:relative; z-index:2;
+    width:100%; max-width:520px;
+    background:var(--bg-alt); border:1px solid var(--border);
+    border-radius:10px; padding:40px;
+  }
+  .kicker{ font-family:'Oswald',sans-serif; font-size:10.5px; letter-spacing:4px; color:var(--gold); margin-bottom:10px; }
+  .title{ font-family:'Oswald',sans-serif; font-size:26px; font-weight:600; margin-bottom:14px; }
+  .desc{ font-size:13px; color:var(--text-muted); line-height:1.7; margin-bottom:26px; }
+
+  .drop-zone{
+    border:2px dashed var(--border-strong); border-radius:8px;
+    padding:40px 20px; text-align:center; cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+    margin-bottom:22px;
+  }
+  .drop-zone:hover{ border-color:var(--gold); background:rgba(212,169,74,0.04); }
+  .drop-icon{ width:38px; height:38px; margin:0 auto 14px; color:var(--gold-light); }
+  .drop-text{ font-size:13px; color:var(--text-muted); margin-bottom:4px; }
+  .drop-sub{ font-size:11px; color:var(--text-faint); }
+
+  .rules{
+    background:var(--surface); border-radius:6px; padding:14px 16px; margin-bottom:26px;
+  }
+  .rules-title{ font-size:11px; color:var(--gold-light); font-weight:600; margin-bottom:8px; letter-spacing:0.5px; }
+  .rules ul{ list-style:none; }
+  .rules li{ font-size:11.5px; color:var(--text-muted); padding:4px 0; display:flex; gap:8px; }
+  .rules li::before{ content:"✓"; color:var(--green); font-weight:700; }
+
+  .submit-btn{
+    width:100%; padding:15px; background:var(--gold); color:#181712;
+    border:none; border-radius:5px; font-weight:700; font-size:13.5px;
+    cursor:pointer; letter-spacing:0.5px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .submit-btn:hover{ background:var(--gold-light); }
+
+  .skip{ text-align:center; margin-top:16px; font-size:11.5px; color:var(--text-faint); }
+  .skip a{ color:var(--text-muted); text-decoration:underline; cursor:pointer; }
+
+  /* estado de sucesso (mostrado como segunda seção de referência) */
+  .success{
+    position:relative; z-index:2; width:100%; max-width:520px;
+    background:var(--bg-alt); border:1px solid var(--green);
+    border-radius:10px; padding:40px; text-align:center; margin-top:24px;
+    display:none;
+  }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+
+  <div class="card">
+    <div class="kicker">DESAFIO · MÓDULO 01 · SHOPEE</div>
+    <div class="title">Anúncio com Estratégia</div>
+    <div class="desc">Envie o print do seu anúncio publicado com o título estratégico aplicado. Assim que enviar, o próximo módulo libera automaticamente — sem espera, sem revisão.</div>
+
+    <div class="drop-zone">
+      <svg class="drop-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <div class="drop-text">Arraste seu print aqui ou clique pra selecionar</div>
+      <div class="drop-sub">PNG ou JPG, até 10MB</div>
+    </div>
+
+    <div class="rules">
+      <div class="rules-title">O QUE O PRINT PRECISA MOSTRAR</div>
+      <ul>
+        <li>Anúncio publicado e visível na plataforma</li>
+        <li>Título aplicado conforme ensinado na aula</li>
+        <li>Tela completa, sem cortes</li>
+      </ul>
+    </div>
+
+    <button class="submit-btn">
+      Enviar e liberar próximo módulo
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+
+    <div class="skip">Ainda não fez o desafio? <a>Assistir a aula novamente</a></div>
+  </div>
+
+</body>
+</html>

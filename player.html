@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LB Academy — Aula</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0a09; --bg-alt:#111110; --surface:#171613;
+    --border:#282722; --border-strong:#3a3728;
+    --gold:#d4a94a; --gold-light:#f0d791;
+    --text:#f3efe4; --text-muted:#a39d8c; --text-faint:#6e6a5d;
+    --green:#5fbf7a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ background:var(--bg); color:var(--text); font-family:'Montserrat',sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,.condensed{ font-family:'Oswald',sans-serif; text-transform:uppercase; letter-spacing:0.5px; }
+  a{ color:inherit; text-decoration:none; }
+
+  .app{ display:flex; min-height:100vh; }
+
+  /* rail lateral fina de ícones (modo player) */
+  .rail-nav{
+    width:64px; flex-shrink:0; background:var(--bg-alt);
+    border-right:1px solid var(--border);
+    display:flex; flex-direction:column; align-items:center;
+    padding:20px 0; gap:22px;
+  }
+  .rail-nav .logo-mini{
+    font-family:'Oswald',sans-serif; font-weight:700; font-size:15px;
+    color:var(--gold-light); margin-bottom:10px;
+  }
+  .rail-nav .icon{ width:20px; height:20px; color:var(--text-faint); cursor:pointer; }
+  .rail-nav .icon.active{ color:var(--gold-light); }
+  .rail-nav .avatar{
+    width:32px; height:32px; border-radius:50%; margin-top:auto;
+    background:linear-gradient(160deg,#2a2822,#171613); border:1px solid var(--border-strong);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald',sans-serif; font-size:12px; color:var(--gold-light);
+  }
+
+  .center{ flex:1; display:flex; flex-direction:column; min-width:0; }
+
+  .top-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px; border-bottom:1px solid var(--border);
+  }
+  .lesson-title{ font-family:'Oswald',sans-serif; font-weight:600; font-size:19px; }
+  .top-actions{ display:flex; gap:12px; align-items:center; }
+  .btn-complete{
+    display:flex; align-items:center; gap:8px;
+    background:var(--surface); border:1px solid var(--border-strong);
+    color:var(--text-muted); padding:9px 16px; border-radius:4px;
+    font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .btn-complete.done{ color:var(--green); border-color:var(--green); }
+  .icon-btn{ width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    color:var(--text-faint); cursor:pointer; border:1px solid transparent; }
+  .icon-btn:hover{ border-color:var(--border-strong); color:var(--text); }
+
+  .player-wrap{ flex:1; display:flex; align-items:center; justify-content:center; padding:30px; background:#000; }
+  .player{
+    width:100%; max-width:920px; aspect-ratio:16/9;
+    background:linear-gradient(160deg,#151412,#0a0a09);
+    border:1px solid var(--border-strong);
+    border-radius:6px; position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .player-play{
+    width:70px; height:70px; border-radius:50%;
+    background:rgba(212,169,74,0.15); border:2px solid var(--gold);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+  }
+  .player-play svg{ width:26px; height:26px; color:var(--gold-light); margin-left:3px; }
+  .player-controls{
+    position:absolute; bottom:0; left:0; right:0;
+    padding:14px 18px; display:flex; align-items:center; gap:12px;
+    background:linear-gradient(0deg, rgba(0,0,0,0.7), transparent);
+    font-size:11px; color:var(--text-muted);
+  }
+  .p-bar{ flex:1; height:3px; background:rgba(255,255,255,0.15); border-radius:2px; }
+  .p-bar-fill{ width:22%; height:100%; background:var(--gold); border-radius:2px; }
+
+  .lesson-desc{ padding:20px 30px 40px; max-width:920px; margin:0 auto; width:100%; }
+  .lesson-desc h3{ font-size:14px; color:var(--gold-light); margin-bottom:10px; }
+  .lesson-desc p{ font-size:13px; color:var(--text-muted); line-height:1.7; margin-bottom:8px; }
+  .topic-list{ list-style:none; margin-top:14px; }
+  .topic-list li{ font-size:12.5px; color:var(--text-muted); padding:6px 0; display:flex; gap:8px; }
+  .topic-list li::before{ content:"—"; color:var(--gold); }
+
+  /* SIDEBAR direita: módulos */
+  .sidebar-right{
+    width:320px; flex-shrink:0; background:var(--bg-alt);
+    border-left:1px solid var(--border);
+    padding:22px; overflow-y:auto;
+  }
+  .sr-track{ font-size:10px; letter-spacing:2px; color:var(--gold); font-family:'Oswald',sans-serif; margin-bottom:4px; }
+  .sr-title{ font-family:'Oswald',sans-serif; font-size:19px; font-weight:600; margin-bottom:4px; }
+  .sr-progress-label{ font-size:11px; color:var(--text-faint); margin-bottom:18px; }
+  .sr-bar{ height:4px; background:var(--surface); border-radius:2px; overflow:hidden; margin-bottom:22px; }
+  .sr-bar-fill{ width:20%; height:100%; background:var(--gold); }
+
+  .mod-item{
+    display:flex; align-items:center; gap:12px;
+    padding:12px 10px; border-radius:5px; margin-bottom:4px;
+    cursor:pointer; border:1px solid transparent;
+  }
+  .mod-item.current{ background:rgba(212,169,74,0.08); border-color:var(--border-strong); }
+  .mod-status{
+    width:26px; height:26px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; font-size:11px;
+    border:1px solid var(--border-strong); color:var(--text-faint);
+  }
+  .mod-status.done{ background:var(--green); border-color:var(--green); color:#0a0a09; }
+  .mod-status.current{ background:var(--gold); border-color:var(--gold); color:#0a0a09; }
+  .mod-info .mod-name{ font-size:12.5px; font-weight:500; color:var(--text); }
+  .mod-info .mod-meta{ font-size:10.5px; color:var(--text-faint); margin-top:2px; }
+  .mod-item.locked .mod-info .mod-name{ color:var(--text-faint); }
+
+  .challenge-box{
+    margin-top:24px; padding:16px; border:1px dashed var(--border-strong);
+    border-radius:6px; background:var(--surface);
+  }
+  .challenge-box .cb-title{ font-family:'Oswald',sans-serif; font-size:13px; color:var(--gold-light); margin-bottom:6px; }
+  .challenge-box p{ font-size:11.5px; color:var(--text-muted); line-height:1.6; margin-bottom:12px; }
+  .upload-btn{
+    width:100%; padding:10px; text-align:center;
+    border:1px solid var(--border-strong); border-radius:4px;
+    font-size:11.5px; color:var(--text-muted); cursor:pointer;
+  }
+
+  @media (max-width: 1000px){
+    .sidebar-right{ display:none; }
+    .rail-nav{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="rail-nav">
+    <div class="logo-mini">LB</div>
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    <svg class="icon active" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4c-1.4-.1-2.2-.4-3.4-1L3 20l1.2-4.5A8.4 8.4 0 1121 11.5z"/></svg>
+    <div class="avatar">L</div>
+  </div>
+
+  <div class="center">
+    <div class="top-bar">
+      <div class="lesson-title">Anúncio com Estratégia</div>
+      <div class="top-actions">
+        <div class="btn-complete">✓ Marcar como concluído</div>
+        <div class="icon-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="player-wrap">
+      <div class="player">
+        <div class="player-play">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+        </div>
+        <div class="player-controls">
+          <span>03:12</span>
+          <div class="p-bar"><div class="p-bar-fill"></div></div>
+          <span>14:20</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="lesson-desc">
+      <h3>Sobre esta aula</h3>
+      <p>Nessa aula você vai aprender a montar um anúncio Shopee pensado pra converter — não só publicar o produto, mas estruturar cada elemento com intenção estratégica.</p>
+      <ul class="topic-list">
+        <li>Título otimizado (palavras-chave, gatilhos)</li>
+        <li>Fotos e vídeo de capa que convertem</li>
+        <li>Descrição estruturada</li>
+        <li>Categoria e atributos corretos</li>
+        <li>Precificação inicial estratégica</li>
+      </ul>
+    </div>
+  </div>
+
+  <aside class="sidebar-right" id="sidebarRight">
+    <div style="text-align:center; padding:30px 0; color:var(--text-faint); font-size:12px;">Carregando...</div>
+  </aside>
+
+</div>
+
+<script type="module">
+  import { auth, db, storage } from "./js/firebase-config.js";
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { collection, getDocs, doc, getDoc, setDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+  const params = new URLSearchParams(window.location.search);
+  const trilhaId = params.get("trilha") || "shopee";
+  const moduloId = params.get("modulo") || "modulo-01";
+
+  let currentUser = null;
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { window.location.href = "login.html"; return; }
+    currentUser = user;
+    await carregarTudo();
+  });
+
+  async function carregarTudo() {
+    const trilhaSnap = await getDoc(doc(db, "trilhas", trilhaId));
+    const trilha = trilhaSnap.exists() ? trilhaSnap.data() : { nome: trilhaId };
+
+    const modulosSnap = await getDocs(query(collection(db, "trilhas", trilhaId, "modulos"), orderBy("ordem")));
+    const modulos = [];
+    modulosSnap.forEach(d => modulos.push({ id: d.id, ...d.data() }));
+
+    const atual = modulos.find(m => m.id === moduloId) || modulos[0];
+
+    const alunoRef = doc(db, "alunos", currentUser.uid);
+    const alunoSnap = await getDoc(alunoRef);
+    const progresso = (alunoSnap.exists() && alunoSnap.data().progresso) ? alunoSnap.data().progresso : {};
+
+    // Preenche título e descrição
+    document.querySelector(".lesson-title").textContent = atual.titulo;
+    document.querySelector(".lesson-desc h3").nextElementSibling ? null : null;
+    const descP = document.querySelector(".lesson-desc p");
+    if (descP) descP.textContent = atual.objetivo || "";
+    const ul = document.querySelector(".topic-list");
+    if (ul && atual.topicos) ul.innerHTML = atual.topicos.map(t => `<li>${t}</li>`).join("");
+
+    // Preenche a sidebar direita
+    let concluidos = 0;
+    let primeiroBloqueado = false;
+    let modHtml = "";
+    modulos.forEach((m) => {
+      const chave = `${trilhaId}-${m.id}`;
+      const feito = !!(progresso[chave] && progresso[chave].concluido);
+      if (feito) concluidos++;
+      const bloqueado = !feito && primeiroBloqueado && m.id !== moduloId;
+      if (!feito && m.id !== atual.id) primeiroBloqueado = primeiroBloqueado || true;
+
+      const isCurrent = m.id === atual.id;
+      modHtml += `
+        <div class="mod-item ${isCurrent ? 'current' : ''} ${bloqueado ? 'locked' : ''}" ${bloqueado ? '' : `onclick="window.location.href='player.html?trilha=${trilhaId}&modulo=${m.id}'"`} style="cursor:${bloqueado ? 'default' : 'pointer'}">
+          <div class="mod-status ${feito ? 'done' : (isCurrent ? 'current' : '')}">${feito ? '✓' : (isCurrent ? '▶' : (bloqueado ? '🔒' : ''))}</div>
+          <div class="mod-info"><div class="mod-name">${String(m.ordem).padStart(2,'0')}. ${m.titulo}</div><div class="mod-meta">${feito ? 'Concluído' : (isCurrent ? 'Assistindo agora' : (bloqueado ? 'Bloqueado' : 'Disponível'))}</div></div>
+        </div>`;
+    });
+
+    const jaConcluiuEsse = !!(progresso[`${trilhaId}-${atual.id}`] && progresso[`${trilhaId}-${atual.id}`].concluido);
+
+    document.getElementById("sidebarRight").innerHTML = `
+      <div class="sr-track">TRILHA ${trilha.nome.toUpperCase()}</div>
+      <div class="sr-title">Módulos</div>
+      <div class="sr-progress-label">${concluidos} de ${modulos.length} módulos concluídos</div>
+      <div class="sr-bar"><div class="sr-bar-fill" style="width:${modulos.length ? (concluidos/modulos.length*100) : 0}%"></div></div>
+      ${modHtml}
+      <div class="challenge-box">
+        <div class="cb-title">🎯 Desafio deste módulo</div>
+        <p>${atual.desafio || "Envie o print comprovando que aplicou o conteúdo deste módulo."}</p>
+        ${jaConcluiuEsse
+          ? `<div class="upload-btn" style="border-color:var(--green); color:var(--green); cursor:default;">✓ Desafio já enviado</div>`
+          : `<input type="file" id="fileInput" accept="image/*" style="display:none">
+             <div class="upload-btn" id="uploadBtn">📎 Enviar print do desafio</div>`
+        }
+      </div>
+    `;
+
+    if (!jaConcluiuEsse) {
+      document.getElementById("uploadBtn").addEventListener("click", () => document.getElementById("fileInput").click());
+      document.getElementById("fileInput").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const btn = document.getElementById("uploadBtn");
+        btn.textContent = "Enviando...";
+        try {
+          const path = `desafios/${currentUser.uid}/${trilhaId}-${atual.id}-${Date.now()}.jpg`;
+          const fileRef = ref(storage, path);
+          await uploadBytes(fileRef, file);
+          const url = await getDownloadURL(fileRef);
+
+          await setDoc(alunoRef, {
+            progresso: {
+              ...progresso,
+              [`${trilhaId}-${atual.id}`]: { concluido: true, desafio_url: url, data: new Date().toISOString() }
+            }
+          }, { merge: true });
+
+          btn.textContent = "✓ Enviado! Recarregando...";
+          setTimeout(() => window.location.reload(), 900);
+        } catch (err) {
+          console.error(err);
+          btn.textContent = "Erro ao enviar, tente de novo";
+        }
+      });
+    }
+  }
+
+  // Botão "Marcar como concluído" no topo continua visual por enquanto (o desafio é quem libera de verdade)
+</script>
+
+</body>
+</html>
