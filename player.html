@@ -68,6 +68,7 @@
     border-radius:6px; position:relative; overflow:hidden;
     display:flex; align-items:center; justify-content:center;
   }
+  .player iframe{ width:100%; height:100%; border:none; display:block; }
   .player-play{
     width:70px; height:70px; border-radius:50%;
     background:rgba(212,169,74,0.15); border:2px solid var(--gold);
@@ -162,14 +163,9 @@
     </div>
 
     <div class="player-wrap">
-      <div class="player">
-        <div class="player-play">
+      <div class="player" id="playerContainer">
+        <div class="player-play" id="playerPlaceholder">
           <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
-        </div>
-        <div class="player-controls">
-          <span>03:12</span>
-          <div class="p-bar"><div class="p-bar-fill"></div></div>
-          <span>14:20</span>
         </div>
       </div>
     </div>
@@ -227,11 +223,22 @@
 
     // Preenche título e descrição
     document.querySelector(".lesson-title").textContent = atual.titulo;
-    document.querySelector(".lesson-desc h3").nextElementSibling ? null : null;
     const descP = document.querySelector(".lesson-desc p");
     if (descP) descP.textContent = atual.objetivo || "";
     const ul = document.querySelector(".topic-list");
     if (ul && atual.topicos) ul.innerHTML = atual.topicos.map(t => `<li>${t}</li>`).join("");
+
+    // Insere o player de vídeo real, se houver video_url cadastrado
+    const playerContainer = document.getElementById("playerContainer");
+    if (atual.video_url && atual.video_url.trim() !== "") {
+      playerContainer.innerHTML = `<iframe src="${atual.video_url}" style="border:none;" allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture" allowfullscreen></iframe>`;
+    } else {
+      playerContainer.innerHTML = `
+        <div style="text-align:center; color:var(--text-faint); padding:20px;">
+          <div style="font-family:'Oswald',sans-serif; font-size:14px; letter-spacing:1px;">VÍDEO EM PRODUÇÃO</div>
+          <div style="font-size:12px; margin-top:8px;">Essa aula estará disponível em breve.</div>
+        </div>`;
+    }
 
     // Preenche a sidebar direita
     let concluidos = 0;
